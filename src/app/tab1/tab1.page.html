@@ -1,17 +1,47 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <ion-slides pager="true" [options]="slideOpts" (ionSlideDidChange)="slideChange($event)">
+      <ion-slide *ngFor="let movie of movies; let i = index">
+        <div class="slider">
+          <h1>{{getMovieTitle(movie)}}</h1>
+          <img class="movie-poster" [src]="'../../assets/moviedb/'+movie"/>
+          <form [formGroup]="submitForm" (ngSubmit)="onSubmit(submitForm, i)" *ngIf="!this.reviewSubmitted[i]">
+            <h3>Did you like this movie?</h3>
+            <ion-item class="box">
+              <ion-label position="stacked">Description</ion-label>
+              <ion-textarea formControlName="text" rows="4" cols="30" inputmode="text" minlength="3" placeholder="Write a movie review here..."></ion-textarea>
+            </ion-item>
+            <p *ngIf="submitForm.controls['text'].errors && submitForm.dirty" class="error" padding>Text too short!</p>
+            <ion-button class="submit-button" type="Submit" shape="round" expand="full">
+              <div class="w-100">
+                <span>Submit</span> 
+                <ion-icon name="send"></ion-icon>
+              </div>
+            </ion-button>
+          </form>
+          <div *ngIf="this.reviewSubmitted[i]">
+            <h4>Sentiment: <strong [ngClass]="predictedSentiments[i].sentiment === 'positive' ? 'green-color' : 'red-color'">
+              {{predictedSentiments[i].sentiment}}</strong></h4>
+            <h4 class="margin-bottom-3">Probability: <strong>{{(predictedSentiments[i].probability).toFixed(2)}}%</strong></h4>
+            <div *ngIf="!this.feedbackLogged[i]">
+              <h4>Was I correct?</h4>
+              <ion-button (click)="submitFeedback(true, i)" fill="clear" shape="round" color="primary">
+                <span class="feedback-options">
+                  <ion-icon name="checkmark"></ion-icon> Yes 
+                </span>
+              </ion-button>
+              <ion-button (click)="submitFeedback(false, i)" fill="clear" shape="round" color="danger">
+                <span class="feedback-options">
+                  <ion-icon name="close"></ion-icon> No 
+                </span>
+              </ion-button>
+            </div>
+            <div *ngIf="this.feedbackLogged[i]">
+              <h4>Thank-you for the feedback! <ion-icon name='heart' [ngStyle]="{'color': randomColor}"></ion-icon></h4>
+            </div>
+          </div>
+        </div>
+      </ion-slide>
+    </ion-slides>
+
 </ion-content>
