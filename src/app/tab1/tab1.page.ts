@@ -1,3 +1,4 @@
+import { Endpoints } from './endpoints';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -30,7 +31,7 @@ export class Tab1Page implements OnInit{
 
   ngOnInit(): void {
 
-    this.http.get('http://127.0.0.1:8000/movies').subscribe(res => {
+    this.http.get(Endpoints.API_GET_MOVIES).subscribe(res => {
       this.movies = res;
       this.movies.forEach(movie => {
         this.reviewSubmitted.push(false);
@@ -50,7 +51,7 @@ export class Tab1Page implements OnInit{
 
   onSubmit(data, index): void {
     if(this.submitForm.valid) {
-      this.http.post('http://127.0.0.1:8000/predict', {text: data.value.text}).subscribe((res: any)=>{
+      this.http.post(Endpoints.API_POST_PREDICT_MOVIES, {text: data.value.text}).subscribe((res: any)=>{
         this.reviewSubmitted[index] = data.value.text;
         this.predictedSentiments[index] = res;
 
@@ -63,7 +64,7 @@ export class Tab1Page implements OnInit{
   }
 
   submitFeedback(is_correct: boolean, index) {
-    this.http.post('http://127.0.0.1:8000/log_feedback',
+    this.http.post(Endpoints.API_POST_LOG_FEEDBACK,
      {text: this.reviewSubmitted[index], predicted_sentiment: this.predictedSentiments[index].sentiment, is_correct}).subscribe(
        res => {
          this.feedbackLogged[index] = true;
