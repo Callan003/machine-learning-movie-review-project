@@ -9,7 +9,8 @@
             <h3>Did you like this movie?</h3>
             <ion-item class="box">
               <ion-label position="stacked">Description</ion-label>
-              <ion-textarea formControlName="text" rows="4" cols="30" inputmode="text" minlength="3" placeholder="Write a movie review here..."></ion-textarea>
+              <ion-textarea formControlName="text" rows="4" cols="30" inputmode="text" minlength="3" placeholder="Write a movie review here...">
+              </ion-textarea>
             </ion-item>
             <p *ngIf="submitForm.controls['text'].errors && submitForm.dirty" class="error" padding>Text too short!</p>
             <ion-button class="submit-button" type="Submit" shape="round" expand="full">
